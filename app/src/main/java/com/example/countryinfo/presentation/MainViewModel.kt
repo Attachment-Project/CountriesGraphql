@@ -28,12 +28,22 @@ class MainViewModel @Inject constructor(
                     isLoading = true,
                 )
             }
+            val countries = getCountriesUseCase.execute()
+            countries?.let {countryList ->
+                _state.update {
+                    it.copy(
+                        countries = countryList,
+                        isLoading = false
+                    )
+                }
+            } ?:
             _state.update {
                 it.copy(
-                    countries = getCountriesUseCase.execute(),
+                    errorMessage = "An error occurred",
                     isLoading = false
                 )
             }
+
         }
     }
 

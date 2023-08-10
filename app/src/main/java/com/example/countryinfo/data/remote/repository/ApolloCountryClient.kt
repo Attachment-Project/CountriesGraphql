@@ -8,19 +8,29 @@ import com.example.countryinfo.data.remote.mapper.toSimpleCountry
 import com.example.countryinfo.domain.model.DetailedCountry
 import com.example.countryinfo.domain.model.SimpleCountry
 import com.example.countryinfo.domain.repositiry.CountryClient
+import java.io.IOException
 
 class ApolloCountryClient(
     private val apolloClient: ApolloClient
 ) : CountryClient {
-    override suspend fun getCountries(): List<SimpleCountry> {
-       return apolloClient
-           .query(CountriesQuery())
-           .execute()
-           .data
-              ?.countries
-           ?.map {
-               it.toSimpleCountry()
-           }?: emptyList()
+    override suspend fun getCountries(): List<SimpleCountry>? {
+       return try {
+           apolloClient
+               .query(CountriesQuery())
+               .execute()
+               .data
+               ?.countries
+               ?.map {
+                   it.toSimpleCountry()
+               }?: emptyList()
+       }catch (e:IOException){
+           e.printStackTrace()
+           null
+       }
+       catch (e:Exception){
+           e.printStackTrace()
+           null
+       }
     }
 
     override suspend fun getCountry(code: String): DetailedCountry? {
