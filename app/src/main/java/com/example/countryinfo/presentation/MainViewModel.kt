@@ -3,6 +3,7 @@ package com.example.countryinfo.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.apollographql.apollo3.exception.ApolloException
 import com.example.countryinfo.domain.model.SimpleCountry
 import com.example.countryinfo.domain.usecase.GetCountryUseCase
 import com.example.countryinfo.domain.usecase.GetCountriesUseCase
@@ -29,21 +30,32 @@ class MainViewModel @Inject constructor(
                 )
             }
             val countries = getCountriesUseCase.execute()
-            countries?.let {countryList ->
+            try {
+                countries?.let {
+                        countryList ->
+                    _state.update {
+                        it.copy(
+                            countries = countryList,
+                            isLoading = false
+                        )
+                    }
+                }
+            } catch (e: ApolloException) {
                 _state.update {
                     it.copy(
-                        countries = countryList,
+                        isError = true,
                         isLoading = false
                     )
                 }
-            } ?:
-            _state.update {
-                it.copy(
-                    errorMessage = "An error occurred",
-                    isLoading = false
-                )
             }
-
+            catch (e: Exception) {
+                _state.update {
+                    it.copy(
+                        isError = true,
+                        isLoading = false
+                    )
+                }
+            }
         }
     }
 

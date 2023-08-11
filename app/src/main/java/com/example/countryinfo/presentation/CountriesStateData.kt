@@ -7,5 +7,5 @@ data class CountriesState(
     val isLoading: Boolean = false,
     val countries: List<SimpleCountry> = emptyList(),
     val selectedCountry: DetailedCountry? = null,
-    val errorMessage:String? = null
+    val isError :Boolean = false,
 )

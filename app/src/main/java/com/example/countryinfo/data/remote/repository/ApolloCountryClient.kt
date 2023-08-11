@@ -14,8 +14,7 @@ class ApolloCountryClient(
     private val apolloClient: ApolloClient
 ) : CountryClient {
     override suspend fun getCountries(): List<SimpleCountry>? {
-       return try {
-           apolloClient
+           return apolloClient
                .query(CountriesQuery())
                .execute()
                .data
@@ -23,15 +22,7 @@ class ApolloCountryClient(
                ?.map {
                    it.toSimpleCountry()
                }?: emptyList()
-       }catch (e:IOException){
-           e.printStackTrace()
-           null
        }
-       catch (e:Exception){
-           e.printStackTrace()
-           null
-       }
-    }
 
     override suspend fun getCountry(code: String): DetailedCountry? {
        return apolloClient

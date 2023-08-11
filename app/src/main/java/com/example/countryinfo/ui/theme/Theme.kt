@@ -26,7 +26,7 @@ private val LightColorScheme = lightColorScheme(
     primary = PurpleGrey80,
     secondary = Black,
     tertiary = Pink40,
-    background = Color(0xFFFFFFFF),
+    background = Color(0xFFF0ECEC),
     surface = Color(0xFFFFFBFE),
     onPrimary = Color.White,
     onSecondary = Color.White,
@@ -52,13 +52,20 @@ fun CountryInfoTheme(
         else -> LightColorScheme
     }
     val view = LocalView.current
+
     if (!view.isInEditMode) {
+
         SideEffect {
             val window = (view.context as Activity).window
             window.statusBarColor = colorScheme.background.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            if (darkTheme){
+                WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =  false
+            }else{
+                WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =  true
+            }
         }
     }
+
 
     MaterialTheme(
         colorScheme = colorScheme,
